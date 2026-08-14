@@ -24,7 +24,15 @@ Este es uno de los 3 repositorios del proyecto **CommunityHub**:
 ✅ Panel `/admin/*` con layout propio (sidebar) para usuarios, actividades, categorías y estadísticas
 ✅ Diseño responsive con CSS propio (sin dependencias nuevas)
 
-⬜ Pendiente: PWA (Fase 3 — manifest, service worker, cache offline).
+### Fase 3 — PWA
+
+✅ `@vite-pwa/nuxt` (estrategia `generateSW`) con Web App Manifest completo (name, short_name, description, icons, start_url, display, theme_color, background_color)
+✅ Íconos reales (`public/icons/`: 64/192/512, versión maskable, apple-touch-icon) y `favicon.ico`
+✅ Service Worker con `runtimeCaching`: `NetworkFirst` para `/api/events` y `/api/categories` (datos frescos si hay red, cache si no), `StaleWhileRevalidate` para imágenes
+✅ Funcionalidad offline real: actividades y categorías **previamente consultadas** siguen disponibles sin conexión
+✅ Indicador visible de "sin conexión" (`OfflineBanner.vue`, usa `navigator.onLine` + eventos `online`/`offline`)
+✅ Aviso de "listo para funcionar offline" y de actualización disponible (`PwaUpdateBanner.vue`, vía `$pwa.offlineReady` / `$pwa.needRefresh`)
+✅ Botón "Instalar app" en la navbar (`InstallPwaButton.vue`, evento estándar `beforeinstallprompt`)
 
 ## Instalación
 
@@ -88,8 +96,26 @@ communityhub-frontend/
 | `/dashboard` | Autenticado | Contenido según rol |
 | `/admin/*` | Admin | Usuarios, actividades, categorías, estadísticas |
 
+## PWA — cómo probarla
+
+El modo `npm run dev` sirve para probar el service worker (`devOptions.enabled: true` en `nuxt.config.ts`), pero el comportamiento más confiable y representativo de producción es con un build real:
+
+```bash
+npm run build
+npm run preview
+```
+
+Pasos para demostrar el flujo offline (sección "38. Flujo final" del enunciado):
+
+1. Abre la app, navega por `/events` y entra al detalle de un par de actividades (para que el service worker las cachee).
+2. Instálala: en Chrome/Edge aparece el ícono de instalación en la barra de direcciones, o usa el botón **"⬇️ Instalar app"** de la navbar.
+3. Corta la conexión (DevTools → pestaña "Network" → "Offline", o desconecta el wifi).
+4. Verás el aviso amarillo **"🔌 Sin conexión"** en la parte superior.
+5. Navega de nuevo a `/events` o a una actividad que ya visitaste: sigue mostrando los datos (vienen del cache, no de la red).
+6. Reconecta: el aviso desaparece solo.
+
 ## Notas
 
 - El frontend **no** se conecta directamente a MongoDB; toda la data pasa por `/api/*` en el backend.
 - El JWT se guarda en una cookie (`ch_token`, `sameSite: strict`) en vez de `localStorage`: funciona igual en SSR/CSR y se limpia sola. Se envía como `Authorization: Bearer <token>` en cada request, nunca de forma automática por el navegador.
-- La configuración de PWA (`@vite-pwa/nuxt`, manifest, service worker, estrategia de caché offline) se agrega en la Fase 3.
+- La PWA usa `generateSW` (el service worker se genera automáticamente a partir de `nuxt.config.ts`), no `injectManifest` — no hace falta lógica de SW a medida para lo que pide el enunciado.

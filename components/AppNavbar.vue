@@ -33,6 +33,7 @@ const isAdmin = computed(() => authStore.user?.role === 'admin');
 
       <nav class="navbar__links" :class="{ 'navbar__links--open': menuOpen }">
         <NuxtLink to="/events" @click="closeMenu">Actividades</NuxtLink>
+        <InstallPwaButton />
 
         <template v-if="authStore.isAuthenticated">
           <NuxtLink to="/favorites" @click="closeMenu">Favoritos</NuxtLink>
