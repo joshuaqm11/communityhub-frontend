@@ -136,7 +136,7 @@ const confirmDelete = async () => {
       <p class="event-detail__description">{{ eventsStore.currentEvent.description || 'Sin descripción.' }}</p>
 
       <ul class="event-detail__facts">
-        <li>📆 {{ new Date(eventsStore.currentEvent.date).toLocaleDateString('es-CR') }}</li>
+        <li>📆 {{ new Date(eventsStore.currentEvent.date).toLocaleDateString('es-CR', { timeZone: 'UTC' }) }}</li>
         <li>🕒 {{ eventsStore.currentEvent.time }}</li>
         <li>📍 {{ eventsStore.currentEvent.location }}</li>
         <li>👥 {{ eventsStore.currentEvent.registeredCount }}/{{ eventsStore.currentEvent.capacity }} inscritos ({{ availableSpots }} disponibles)</li>
