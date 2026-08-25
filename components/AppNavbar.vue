@@ -41,7 +41,7 @@ const isAdmin = computed(() => authStore.user?.role === 'admin');
           <NuxtLink v-if="isOrganizer" to="/my-events" @click="closeMenu">Mis actividades</NuxtLink>
           <NuxtLink to="/dashboard" @click="closeMenu">Dashboard</NuxtLink>
           <NuxtLink v-if="isAdmin" to="/admin" @click="closeMenu">Admin</NuxtLink>
-          <NuxtLink to="/profile" @click="closeMenu">{{ authStore.user?.firstName }}</NuxtLink>
+          <NuxtLink to="/profile" @click="closeMenu">Mi perfil</NuxtLink>
           <button type="button" class="btn btn-outline navbar__logout" @click="handleLogout">Salir</button>
         </template>
         <template v-else>
